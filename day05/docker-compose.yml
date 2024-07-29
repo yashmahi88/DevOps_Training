@@ -1,0 +1,26 @@
+version: '3'
+services:
+  frontend:
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - shareddata:/usr/share/nginx/html
+  backend:
+    image: mybackendimage
+    ports:
+      - "8081:80"
+    volumes:
+      - shareddata:/app/data
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+volumes:
+  shareddata:
+  dbdata:

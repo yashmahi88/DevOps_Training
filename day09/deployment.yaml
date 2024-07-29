@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mywebaapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: static-web
+  template:
+    metadata:
+      labels:
+        app: static-web
+    spec:
+      containers:
+      - name: nginx
+        image: yashmahi04/web-app-09 
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "50m"
+            memory: "5Mi"
+          requests:
+            cpu: "2m"
+

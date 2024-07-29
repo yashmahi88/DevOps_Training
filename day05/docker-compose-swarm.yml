@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  frontend:
+    image: nginx
+    ports:
+      - "8080:80"
+    deploy:
+      replicas: 2
+    volumes:
+      - shareddata:/usr/share/nginx/html
+  backend:
+    image: mybackendimage
+    ports:
+      - "8081:80"
+    deploy:
+      replicas: 2
+    volumes:
+      - shareddata:/app/data
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    deploy:
+      replicas: 1
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+volumes:
+  shareddata:
+  dbdata:

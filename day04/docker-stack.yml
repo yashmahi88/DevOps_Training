@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - wordpress_network
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    deploy:
+      replicas: 1
+
+  wordpress:
+    image: wordpress:latest
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - wordpress_network
+    ports:
+      - "8000:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    deploy:
+      replicas: 1
+
+volumes:
+  mysql_data:
+  wordpress_data:
+
+networks:
+  wordpress_network:
