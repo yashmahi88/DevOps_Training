@@ -194,4 +194,3 @@ Troubleshooting
     Permission Issues: Verify that the playbook and script files have the appropriate permissions.
     PostgreSQL Service Not Starting: Check the logs for errors and ensure PostgreSQL is properly configured.
 
-Feel free to adjust configurations, passwords, and paths according to your environment and security requirements.
