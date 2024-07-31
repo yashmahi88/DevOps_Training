@@ -1,0 +1,39 @@
+---
+- name: Install Docker and Run an image
+  hosts: worker01
+  become: true
+  tasks: 
+    - name: install python and Docker
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - docker.io
+        state: present
+
+    - name: Enable docker servcie
+      systemd:
+        name: docker
+        enabled: yes
+
+    - name: Start the docker servcie
+      systemd:
+        name: docker
+        state: started
+
+    - name: Pulling docker image
+      docker_image:
+        name: yashmahi04/nginx_webapp
+        tag: latest
+        source: pull
+
+    - name: Running docker container
+      docker_container:
+        name: my_test_container
+        image: yashmahi04/nginx_webapp:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "81:80"
+
+
