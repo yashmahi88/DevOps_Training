@@ -1,0 +1,94 @@
+---
+- hosts: database
+  become: yes
+  vars:
+    postgres_version: 12
+    postgres_db: my_database
+    postgres_user: my_user
+    postgres_password: my_password
+    backup_dir: /var/backups/postgresql
+    postgres_conf_path: /etc/postgresql/{{ postgres_version }}/main
+
+  pre_tasks:
+    - name: Ensure apt cache is up to date
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+  tasks:
+    - name: Install PostgreSQL and related packages
+      apt:
+        name: 
+          - "postgresql-{{ postgres_version }}"
+          - "postgresql-contrib-{{ postgres_version }}"
+        state: present
+
+    - name: Ensure PostgreSQL service is started and enabled
+      systemd:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    - name: Create PostgreSQL database
+      postgresql_db:
+        name: "{{ postgres_db }}"
+        state: present
+
+    - name: Create PostgreSQL user
+      postgresql_user:
+        name: "{{ postgres_user }}"
+        password: "{{ postgres_password }}"
+        db: "{{ postgres_db }}"
+        priv: "ALL"
+        state: present
+
+    - name: Set PostgreSQL password encryption method to md5
+      postgresql_pg_hba:
+        dest: "{{ postgres_conf_path }}/pg_hba.conf"
+        type: "host"
+        database: "{{ postgres_db }}"
+        user: "{{ postgres_user }}"
+        address: "0.0.0.0/0"
+        method: "md5"
+
+    - name: Allow remote connections to PostgreSQL
+      lineinfile:
+        path: "{{ postgres_conf_path }}/postgresql.conf"
+        regexp: '^#?listen_addresses =.*'
+        line: "listen_addresses = '*'"
+        state: present
+
+    - name: Create backup directory
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        owner: postgres
+        group: postgres
+        mode: '0755'
+
+    - name: Deploy backup script
+      copy:
+        src: scripts/backup.sh
+        dest: /usr/local/bin/backup.sh
+        mode: '0755'
+
+    - name: Set up cron job for backups
+      cron:
+        name: "PostgreSQL Backup"
+        user: postgres
+        job: "/usr/local/bin/backup.sh {{ postgres_db }} {{ backup_dir }} > /dev/null 2>&1"
+        minute: "0"
+        hour: "2"
+        state: present
+
+  handlers:
+    - name: restart postgresql
+      systemd:
+        name: postgresql
+        state: restarted
+
+  post_tasks:
+    - name: Confirm PostgreSQL service is running
+      systemd:
+        name: postgresql
+        state: started

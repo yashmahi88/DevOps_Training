@@ -1,0 +1,68 @@
+---
+- hosts: database
+  become: yes
+  vars:
+    postgres_version: 12
+    postgres_db: app_db
+    postgres_user: app_user
+    postgres_password: app_password
+
+  tasks:
+    - name: Install PostgreSQL
+      apt:
+        name: "postgresql-{{ postgres_version }}"
+        state: present
+
+    - name: Create PostgreSQL database and user
+      postgresql_db:
+        name: "{{ postgres_db }}"
+        state: present
+
+    - name: Create PostgreSQL user
+      postgresql_user:
+        db: "{{ postgres_db }}"
+        name: "{{ postgres_user }}"
+        password: "{{ postgres_password }}"
+        priv: "ALL"
+        state: present
+
+    - name: Configure PostgreSQL access
+      template:
+        src: templates/pg_hba.conf.j2
+        dest: /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf
+        mode: 0644
+      notify: restart postgresql
+
+  handlers:
+    - name: restart postgresql
+      systemd:
+        name: postgresql
+        state: restarted
+
+- hosts: application
+  become: yes
+  vars:
+    web_root: /var/www/html
+    app_config_template: templates/app_config.php.j2
+    db_host: "{{ hostvars['database']['ansible_host'] }}"
+    db_name: app_db
+    db_user: app_user
+    db_password: app_password
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Deploy web application
+      copy:
+        src: files/index.html
+        dest: "{{ web_root }}/index.html"
+        mode: 0644
+
+    - name: Deploy application configuration
+      template:
+        src: "{{ app_config_template }}"
+        dest: "{{ web_root }}/app_config.php"
+        mode: 0644
