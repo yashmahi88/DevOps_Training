@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        registry= 'docker.io'
         DOCKER_CREDENTIALS_ID = 'docker-cred'
         DOCKER_IMAGE = 'yashmahi04/java-app'
     }
@@ -15,7 +16,7 @@ pipeline {
             steps {
                 script {
                     def customImage = docker.build("${DOCKER_IMAGE}")
-                    customImage.push('latest')
+                    customImage.push()
                 }
             }
         }
