@@ -1,0 +1,31 @@
+---
+- name: Deploy Java Application
+  hosts: local
+  become: yes
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker service is started
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull Docker image from registry
+      docker_image:
+        name: yashmahi04/test15
+        tag: latest
+        source: pull
+
+    - name: Run Docker container
+      docker_container:
+        name: java-app
+        image: yashmahi04/test15:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "8099:80"
