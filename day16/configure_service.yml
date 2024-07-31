@@ -1,0 +1,22 @@
+---
+- name: Configure nginx service with specific parameters
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure nginx is installed (if not already installed)
+      package:
+        name: nginx
+        state: present
+
+    - name: Deploy custom nginx configuration
+      copy:
+        src: files/nginx.conf
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Restart nginx service to apply configuration
+      service:
+        name: nginx
+        state: restarted

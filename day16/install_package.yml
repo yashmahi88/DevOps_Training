@@ -1,0 +1,9 @@
+---
+- name: Install a specific package on all managed nodes
+  hosts: all
+  become: yes  # Use sudo to run commands as root
+  tasks:
+    - name: Ensure nginx is installed
+      package:
+        name: nginx
+        state: present

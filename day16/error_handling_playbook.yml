@@ -1,0 +1,29 @@
+---
+- name: Playbook with Error Handling
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure a specific service is started
+      block:
+        - name: Start a non-existent service
+          service:
+            name: non_existent_service
+            state: started
+      rescue:
+        - name: Log error for non-existent service
+          debug:
+            msg: "The service 'non_existent_service' could not be started because it does not exist."
+
+    - name: Manage files with error handling
+      block:
+        - name: Access a non-existent file
+          command: cat /path/to/non_existent_file.txt
+      rescue:
+        - name: Log error for non-existent file
+          debug:
+            msg: "The file '/path/to/non_existent_file.txt' could not be accessed because it does not exist."
+
+      always:
+        - name: Clean up or perform a final action
+          debug:
+            msg: "Error handling block has completed execution, regardless of success or failure of previous tasks."

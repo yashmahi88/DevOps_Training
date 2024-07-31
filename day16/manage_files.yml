@@ -1,0 +1,33 @@
+---
+- name: Manage files on managed nodes
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create a directory
+      file:
+        path: /opt/mydir
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create a file with content
+      copy:
+        dest: /opt/mydir/myfile.txt
+        content: |
+          This is a sample file.
+          Created by Ansible playbook.
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Ensure a file is absent
+      file:
+        path: /opt/mydir/oldfile.txt
+        state: absent
+
+    - name: Modify a file's content (append text)
+      lineinfile:
+        path: /opt/mydir/myfile.txt
+        line: "This line was added by Ansible."
+        create: yes
