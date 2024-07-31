@@ -1,2 +1,2 @@
-target ansible_host=172.00.0.00 ansible_connection=ssh ansible_user=einfochips ansible_ssh_pass=einfochips@123
+target ansible_host=172.25.1.78 ansible_connection=ssh ansible_user=einfochips ansible_ssh_pass=einfochips@123
 
