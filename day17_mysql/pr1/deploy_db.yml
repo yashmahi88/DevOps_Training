@@ -1,0 +1,75 @@
+- name: setup Mysql
+  hosts: web
+  become: yes
+  vars:
+    db_name: "my_database"
+    db_user: "my_user"
+    db_password: "user123"
+    backup_dir: "/backup/mysql"
+    backup_schedule: "daily"
+
+  tasks:
+  - name: Install MySQL server
+    apt:
+      update_cache: yes
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - mysql-server
+    - mysql-client
+    - python3-mysqldb
+    - libmysqlclient-dev
+
+  - name: Copy MySQL configuration file
+    template:
+      src: /home/einfochips/day17_pr1/templates/mysql.cnf.j2
+      dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+    notify: Restart MySQL
+
+  - name: Ensure MySQL service is running and enabled
+    service:
+      name: mysql
+      state: started
+      enabled: yes
+
+  - name: Create MySQL user
+    mysql_user:
+      name: "{{ db_user }}"
+      password: "{{ db_password }}"
+      priv: '*.*:ALL'
+      host: '%'
+      state: present
+
+  - name: Create MySQL database
+    mysql_db:
+      name: "{{ db_name }}"
+      state: present
+
+  - name: Configure backup directory
+    file:
+      path: "{{ backup_dir }}"
+      state: directory
+      mode: '0755'
+
+  - name: Copy MySQL backup script
+    copy:
+      src: /home/einfochips/day17_pr1/scripts/backup.sh
+      dest: /usr/local/bin/mysql_backup.sh
+      mode: '0755'
+
+  - name: Configure backup cron job
+    cron:
+      name: "mysql backup"
+      minute: "0"
+      hour: "2"
+      day: "*"
+      month: "*"
+      weekday: "*"
+      job: "/usr/local/bin/mysql_backup.sh"
+      state: present
+
+  handlers:
+  - name: Restart MySQL
+    service:
+      name: mysql
+      state: restarted

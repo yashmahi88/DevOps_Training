@@ -1,0 +1,76 @@
+- name: Deploy and configure MySQL database
+  hosts: dbserver
+  become: yes
+  vars:
+    db_name: "my_database"
+    db_user: "my_user"
+    db_password: "user123"
+
+  tasks:
+  - name: Install MySQL server
+    apt:
+      update_cache: yes
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - mysql-server
+    - mysql-client
+    - python3-mysqldb
+    - libmysqlclient-dev
+
+  - name: Ensure MySQL service is running
+    service:
+      name: mysql
+      state: started
+      enabled: yes
+
+  - name: Create MySQL user
+    mysql_user:
+      name: "{{ db_user }}"
+      password: "{{ db_password }}"
+      priv: '*.*:ALL'
+      host: '%'
+      state: present
+
+  - name: Create MySQL database
+    mysql_db:
+      name: "{{ db_name }}"
+      state: present
+
+- name: Deploy and configure web server and application
+  hosts: apserver
+  become: yes
+
+  vars:
+    db_host: "host_ip"
+    db_name: "my_database"
+    db_user: "my_user"
+    db_password: "user123"
+
+  tasks:
+  - name: Install web server
+    apt:
+      name: nginx
+      state: present
+      update_cache: yes
+
+  - name: Ensure web server is running
+    service:
+      name: nginx
+      state: started
+      enabled: yes
+
+  - name: Deploy application files
+    copy:
+      src: files/index.html
+      dest: /var/www/html/index.html
+
+  - name: Configure application
+    template:
+      src: templates/app_config.php.j2
+      dest: /var/www/html/app_config.php
+
+  - name: Restart web server to apply changes
+    service:
+      name: nginx
+      state: restarted
