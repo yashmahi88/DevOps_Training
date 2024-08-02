@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-processing-service
+spec:
+  selector:
+    app: order-processing
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30003  # Specify a NodePort
+  type: NodePort
