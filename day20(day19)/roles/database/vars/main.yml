@@ -1,0 +1,9 @@
+# root_password: pass@123
+# admin_user: Admin
+# admin_password: Admin@123
+# db_name: sampledb
+# password_validation_policy: 1
+mysql_root_password: 'pass@123'
+mysql_db_name: 'mydatabase'
+mysql_user_name: 'myuser'
+mysql_user_password: 'mypassword'

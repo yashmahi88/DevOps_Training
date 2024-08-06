@@ -1,5 +1,5 @@
 ---
-- name: Install MySQL
+- name: Install MySQL Server
   apt:
     name: mysql-server
     state: present
@@ -9,13 +9,41 @@
   service:
     name: mysql
     state: started
-    enabled: true
+    enabled: yes
   become: yes
 
-#- name: Set up MySQL root user password
-#  community.mysql.mysql_user:
-#    name: "my_database"
-#    password: "user123"
-#    host_all: true
-#    state: present
-#  become: yes
+- name: Ensure MySQL is running
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+  become: yes
+
+# - name: Set up MySQL root password
+#   mysql_user:
+#     name: root
+#     password: "{{ mysql_root_password }}"
+#     host: localhost
+#     login_user: root
+#     login_password: ''
+#     state: present
+#   become: yes
+
+- name: Create a MySQL Database
+  mysql_db:
+    name: mydatabase
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  become: yes
+
+- name: Create a MySQL User
+  mysql_user:
+    name: myuser
+    password: mypassword
+    priv: '*.*:ALL'
+    host: '%'
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    state: present
+  become: yes
