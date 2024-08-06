@@ -1,0 +1,21 @@
+---
+- name: Install MySQL
+  apt:
+    name: mysql-server
+    state: present
+  become: yes
+
+- name: Start MySQL service
+  service:
+    name: mysql
+    state: started
+    enabled: true
+  become: yes
+
+#- name: Set up MySQL root user password
+#  community.mysql.mysql_user:
+#    name: "my_database"
+#    password: "user123"
+#    host_all: true
+#    state: present
+#  become: yes
