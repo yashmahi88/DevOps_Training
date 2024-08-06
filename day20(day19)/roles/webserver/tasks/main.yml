@@ -1,0 +1,41 @@
+---
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+  become: yes
+
+- name: Start Nginx service
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Deploy the index.html file
+  copy:
+    src: /home/einfochips/my_ansible_project/roles/webserver/files/index.html
+    dest: /var/www/html/index.html
+    owner: www-data
+    group: www-data
+    mode: '0644'
+  become: yes
+
+- name: Configure Nginx to Serve the HTML Page
+  copy:
+    src: nginx_default
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+
+- name: Test Nginx Configuration
+  command: nginx -t
+  become: yes
+
+- name: Reload Nginx
+  service:
+    name: nginx
+    state: reloaded
+  become: yes

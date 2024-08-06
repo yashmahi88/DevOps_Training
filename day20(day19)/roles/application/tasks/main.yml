@@ -1,0 +1,43 @@
+---
+- name: Install Python and Pip
+  apt:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+    state: present
+  become: yes
+
+- name: Create application directory
+  file:
+    path: /var/www/myapp
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  become: yes
+
+- name: Create a Python virtual environment
+  command: python3 -m venv /var/www/myapp/venv
+  become: yes
+
+- name: Deploy Flask Application Files
+  synchronize:
+    src: /home/einfochips/my_ansible_project/roles/application/files/
+    dest: /var/www/myapp/
+    recursive: yes
+  become: yes
+
+- name: Install Flask and other dependencies
+  pip:
+    name:
+      - Flask==2.0.1
+      - requests==2.25.1
+    virtualenv: /var/www/myapp/venv
+  become: yes
+
+- name: Start Flask Application
+  shell: |
+    /var/www/myapp/venv/bin/python /var/www/myapp/app.py > /var/log/myapp.log 2>&1 &
+  become: yes
+
