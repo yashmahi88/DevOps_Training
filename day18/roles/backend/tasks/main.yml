@@ -1,0 +1,62 @@
+---
+- name: Install Node.js and npm
+  ansible.builtin.apt:
+    name: 
+      - nodejs
+      - npm
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Create deploy group
+  ansible.builtin.group:
+    name: deploy
+    state: present
+  become: yes
+
+- name: Create deploy user
+  ansible.builtin.user:
+    name: deploy
+    group: deploy
+    create_home: yes
+    shell: /bin/bash
+    state: present
+  become: yes
+
+- name: Create application directory
+  ansible.builtin.file:
+    path: /opt/nodejs-app
+    state: directory
+    owner: deploy
+    group: deploy
+    mode: '0755'
+  become: yes
+
+- name: Copy Node.js application files
+  ansible.builtin.copy:
+    src: files/app.js
+    dest: /opt/nodejs-app/app.js
+    owner: deploy
+    group: deploy
+    mode: '0644'
+  become: yes
+
+- name: Create a systemd service file
+  ansible.builtin.template:
+    src: templates/systemd.service.j2
+    dest: /etc/systemd/system/nodejs-app.service
+  become: yes
+
+# - name: Install Node.js dependencies
+#   ansible.builtin.command:
+#     cmd: npm install
+#     chdir: /opt/nodejs-app
+#     creates: /opt/nodejs-app/node_modules  # Skip if dependencies are already installed
+#   become: yes
+
+- name: Start Node.js application
+  ansible.builtin.systemd:
+    name: nodejs-app
+    state: started
+    enabled: yes
+  become: yes

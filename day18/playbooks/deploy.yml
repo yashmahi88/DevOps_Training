@@ -1,0 +1,17 @@
+---
+- name: Deploy Frontend
+  hosts: frontend
+  roles:
+    - frontend
+
+- name: Setup Database
+  hosts: database
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - database
+
+- name: Deploy Backend
+  hosts: backend
+  roles:
+    - backend

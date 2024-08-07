@@ -1,0 +1,12 @@
+[Unit]
+Description=Node.js Application
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /opt/nodejs-app/app.js
+Restart=always
+User=nobody
+Group=nogroup
+
+[Install]
+WantedBy=multi-user.target
