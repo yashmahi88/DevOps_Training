@@ -1,0 +1,12 @@
+- name: Docker Container Creation
+  hosts: localhost
+  tasks:
+  - name: Create and start Docker container
+    community.docker.docker_container:
+      name: my_nginx
+      image: nginx:latest
+      state: started
+      ports:
+      - "9090:80"
+      volumes:
+      - /my/local/path:/usr/share/nginx/html
