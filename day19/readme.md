@@ -479,6 +479,10 @@ instance['PublicDnsName']] = {
        - application
    ```
 ![alt text](image-5.png)
+
+Make the Script Executable: Ensure your script is executable:
+```chmod +x /path/to/ec2_inventory.py```
+
 2. **Define Inventory and Variable Files:**
 
 
@@ -494,6 +498,11 @@ instance['PublicDnsName']] = {
 ![alt text](image-8.png)
 
 ![alt text](image-9.png)
+
+![alt text](image-10.png)
+
+![alt text](image-11.png)
+
 **Deliverables:**
 - Ansible playbook for web application deployment.
 - Successfully deployed web application on the EC2 instance.
