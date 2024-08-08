@@ -1,12 +1,37 @@
-- name: Docker Container Creation
-  hosts: localhost
+---
+- name: Creating Docker container on aws_ec2 hosts 
+  hosts: aws_ec2
+  become: yes
   tasks:
-  - name: Create and start Docker container
-    community.docker.docker_container:
-      name: my_nginx
-      image: nginx:latest
-      state: started
-      ports:
-      - "9090:80"
-      volumes:
-      - /my/local/path:/usr/share/nginx/html
+    - name: Install dependencies
+      apt:
+        name: 
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+        update_cache: yes
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+        
+    - name: Ensure Docker is installed
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Create and start Docker container
+      community.docker.docker_container:
+        name: my_nginx
+        image: nginx:latest
+        state: started
+        ports:
+        - "8089:80"
