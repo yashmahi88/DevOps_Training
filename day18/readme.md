@@ -1,4 +1,4 @@
-Certainly! Here’s a complete setup for your Ansible project that deploys a three-tier web application (frontend with Nginx, backend with Node.js, and MySQL database) using a single inventory file. The `index.html` file for the frontend will display a simple "Hello from frontend" message. No Git repository will be used for the backend.
+
 
 ### Project Structure
 
