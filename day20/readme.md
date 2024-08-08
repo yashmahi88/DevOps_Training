@@ -110,10 +110,5 @@ Deliverable: Playbooks showcasing the deployment and management of Docker contai
 ```
 ansible-playbook -i inventory docker_container.yml 
 ```
-![alt text](image-5.png)
+![alt text](image-10.png)
 
-Ensure the container is running
-```
-sudo docker ps
-```
-![alt text](image-6.png)

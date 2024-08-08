@@ -6,7 +6,6 @@ filters:
     - running
   tag:Name:
     - YashMahindrakar
-    - Poonam
 hostnames:
   - dns-name
 compose:
