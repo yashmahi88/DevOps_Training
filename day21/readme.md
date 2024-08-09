@@ -262,6 +262,13 @@ As there were no errors the terminal was blank and had to exit.
 ![alt text](image-4.png)
 
 ![alt text](image-9.png)
+
+To run the prometheus.yml use the following command 
+
+```
+./prometheus --config.file=/etc/prometheus/prometheus.yml
+```
+
 Ensure the prometheus is running on http://localhost:9090
 ![alt text](image-8.png)
 
