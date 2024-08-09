@@ -96,19 +96,47 @@ Deliverable: Playbooks showcasing the deployment and management of Docker contai
 
 
 ```
-- name: Ensure nginx container is running
-  docker_container:
-    name: my_nginx
-    image: nginx:latest
-    state: started
-    ports:
-      - "8080:80"
-    volumes:
-      - /my/local/path:/usr/share/nginx/html
+---
+- name: Creating Docker container on aws_ec2 hosts 
+  hosts: aws_ec2
+  become: yes
+  tasks:
+    - name: Install dependencies
+      apt:
+        name: 
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+        update_cache: yes
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+        
+    - name: Ensure Docker is installed
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Create and start Docker container
+      community.docker.docker_container:
+        name: my_nginx
+        image: nginx:latest
+        state: started
+        ports:
+        - "8089:80"
 ```
 
 ```
-ansible-playbook -i inventory docker_container.yml 
+ansible-playbook -i inventory docker_container.yml --private-key ~/.ssh/<filename.pem>
 ```
 ![alt text](image-10.png)
 
