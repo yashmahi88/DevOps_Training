@@ -1,4 +1,3 @@
-Certainly! Here's a comprehensive guide to deploying a multi-tier architecture application on AWS using Terraform. I’ll walk you through each step, including installation, configuration, and execution.
 
 ### 1. Install Terraform
 
