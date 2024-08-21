@@ -18,7 +18,7 @@ If you don't have Terraform installed, follow these steps:
     ```
 
 3. **Download the latest Terraform binary:**
-    # https://developer.hashicorp.com/terraform/install#linux
+    #### https://developer.hashicorp.com/terraform/install#linux
 
     ```bash
     wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
