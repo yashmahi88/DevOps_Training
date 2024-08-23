@@ -203,7 +203,7 @@ terraform {
     region         = "us-west-2"                    # AWS region
     dynamodb_table = "yashm-terraform-lock"         # DynamoDB table for state locking
   }
-}
+}       #Add this backend block after the resources has been created NOT BEFORE.
 
 provider "aws" {
   region = "us-west-2"  # Replace with your preferred region
