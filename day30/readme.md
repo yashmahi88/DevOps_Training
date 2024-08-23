@@ -207,6 +207,7 @@ terraform {
 
 provider "aws" {
   region = "us-west-2"  # Replace with your preferred region
+  profile = var.aws_profile
 }
 
 module "aws_infrastructure" {
@@ -267,6 +268,11 @@ variable "name" {
   type        = string
 }
 
+variable "aws_profile" {
+  type        = string
+  description = "The AWS CLI profile to use for this workspace"
+}
+
 ```
 
 #### **Root: `terraform.tfvars`**
@@ -320,7 +326,7 @@ Step 1: Set Up AWS CLI Profiles
 First, configure your AWS CLI with different profiles for each environment. Each profile should have access to a different AWS account or environment.
 ```
 
-aws configure --profile staging
+aws configure --profile prod
 ```
 
 ![alt text](image-1.png)
@@ -348,12 +354,12 @@ Manage separate environments using workspaces.
   ![alt text](image-3.png)
 
 2. **Switch Workspaces**
-   As the last created workspace was `staging` so now we will be in the staging workspace.
-   
-   Apply the configuration on `staging`:
+  
+   Apply the configuration on `prod`:
 
    ```bash
    terraform init
+   terraform apply -var="aws_profile=prod"
    ```
 
    ![alt text](image-6.png)
@@ -406,7 +412,7 @@ Manage separate environments using workspaces.
 
    ```bash
    terraform workspace select dev
-   terraform apply
+   terraform apply -var="aws_profile=dev"
    ```
    ![alt text](image-17.png)
 
@@ -435,7 +441,7 @@ Manage separate environments using workspaces.
    terraform workspace select prod
    terraform destroy
 
-   terraform workspace select staging
+   terraform workspace select dev
    terraform destroy
    ```
 

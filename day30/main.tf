@@ -9,6 +9,7 @@ terraform {
 
 provider "aws" {
   region = "us-west-2"  # Replace with your preferred region
+  profile = var.aws_profile
 }
 
 module "aws_infrastructure" {
