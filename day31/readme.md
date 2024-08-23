@@ -670,23 +670,23 @@ resource "aws_dynamodb_table" "yashm_terraform_lock" {
   
   ![alt text](image-2.png)
     
-    EC2:
+EC2:
     
-    ![alt text](image-6.png)
+![alt text](image-6.png)
      
-     ![alt text](image-11.png)
+![alt text](image-11.png)
      
-    ![alt text](image-5.png)
+![alt text](image-5.png)
 
-    VPC:
+VPC:
 
-    ![alt text](image-7.png)
+![alt text](image-7.png)
 
-    ![alt text](image-8.png)
+![alt text](image-8.png)
 
-    RDS:
+RDS:
 
-    ![alt text](image-10.png)
+![alt text](image-10.png)
 
 S3:
      
