@@ -1,0 +1,14 @@
+image:
+  repository: yashmahi04/my-app
+  tag: latest
+
+service:
+  type: NodePort
+  port: 8088
+
+ingress:
+  enabled: true
+  hosts:
+    - host: "my-app.example.com"
+      paths:
+        - /
